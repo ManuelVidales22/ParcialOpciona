@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - app-go
+  db:
+    build:
+      context: ./base_datos
+      dockerfile: Dockerfile
+    environment:
+      
+      MYSQL_DATABASE: springbootdb
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+    ports:
+      - "3306:3306"
+    networks:
+      - app-go
+networks:
+  app-go:
+    driver: bridge

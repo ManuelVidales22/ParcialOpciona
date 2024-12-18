@@ -1,0 +1,30 @@
+# Imagen base de Maven con Java 8 para construir la aplicación
+FROM maven:3.8.6-eclipse-temurin-8 AS builder
+
+# Crear y establecer el directorio de trabajo
+WORKDIR /app
+
+# Copiar el archivo pom.xml y descargar dependencias
+COPY pom.xml ./
+RUN mvn dependency:go-offline -B
+
+# Copiar el resto del proyecto
+COPY . .
+
+# Compilar y construir la aplicación
+RUN mvn clean install -DskipTests
+
+# Imagen base de Java 8 para ejecutar la aplicación
+FROM eclipse-temurin:8-jdk
+
+# Crear y establecer el directorio de trabajo
+WORKDIR /app
+
+# Copiar el archivo JAR desde la fase de construcción
+COPY --from=builder /app/target/*.jar app.jar
+
+# Exponer el puerto 8080
+EXPOSE 8080
+
+# Comando para ejecutar Spring Boot
+CMD ["java", "-jar", "app.jar"]

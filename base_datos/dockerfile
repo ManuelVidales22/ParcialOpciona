@@ -1,0 +1,9 @@
+# Imagen base de MySQL 8
+FROM mysql:8.0
+ENV MySQL_ALLOW_EMPTY_PASSWORD=yes
+# Copiar el script SQL de inicialización
+COPY start.sql /docker-entrypoint-initdb.d/
+
+
+# Exponer el puerto 3306
+EXPOSE 3306
